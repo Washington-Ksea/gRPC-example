@@ -21,7 +21,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	conn, err := grpc.Dial(addr, grpc.WithTransportCredentials(cred))
+	conn, err := grpc.Dial(addr, grpc.WithTransportCredentials(cred), grpc.WithUnaryInterceptor(unaryInterceptor))
 	if err != nil {
 		log.Fatalf("did not conect %v", err)
 	}
@@ -53,4 +53,12 @@ func main() {
 	}
 	log.Printf("Greeting: %s", r.Message)
 
+}
+
+func unaryInterceptor(ctx context.Context, method string, req, reply interface{},
+	cc *grpc.ClientConn, invoker grpc.UnaryInvoker, opts ...grpc.CallOption) error {
+	log.Printf("before call: %s, request: %+v", method, req)
+	err := invoker(ctx, method, req, reply, cc, opts...)
+	log.Printf("after call %s, response: %+v", method, reply)
+	return err
 }
