@@ -26,6 +26,7 @@ func main() {
 	name := os.Args[1]
 
 	ctx := context.Background()
+	//ctx, cancel := context.WithCancel(ctx)
 	md := metadata.Pairs("timestamp", time.Now().Format(time.Stamp))
 	ctx = metadata.NewOutgoingContext(ctx, md)
 	r, err := c.SayHello(ctx, &pb.HelloRequest{Name: name}, grpc.Trailer(&md))
